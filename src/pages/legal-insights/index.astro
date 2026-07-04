@@ -1,0 +1,84 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import ArticleCard from '@/components/ArticleCard.astro';
+import { getCollection } from 'astro:content';
+import { sortByDateDesc } from '@/lib/articles';
+import { PRACTICE_AREAS } from '@/site.config';
+
+const allArticles = await getCollection('articles', ({ data }) => !data.draft);
+const sorted = sortByDateDesc(allArticles);
+
+const categories = ['All', ...PRACTICE_AREAS.map((p) => p.title)];
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout
+  title="Legal Insights"
+  description="Plain-language explanations of common legal situations — property, family, consumer, contract, criminal, employment, and civil law."
+>
+  <div class="mx-auto max-w-6xl px-6 py-14">
+    <Breadcrumbs crumbs={[{ label: 'Home', href: '/' }, { label: 'Legal Insights', href: '/legal-insights/' }]} />
+
+    <header class="mt-6 max-w-2xl">
+      <p class="citation-mark">Legal Insights</p>
+      <h1 class="mt-3 font-display text-3xl font-medium text-ink sm:text-4xl">
+        Read before you need to ask
+      </h1>
+      <p class="mt-4 text-base leading-relaxed text-slate">
+        New articles are published regularly, explaining the legal
+        situations people run into most often — in plain language, with
+        no assumed knowledge.
+      </p>
+    </header>
+
+    <div class="mt-8 flex flex-wrap gap-2" role="group" aria-label="Filter articles by category">
+      {categories.map((cat) => (
+        <button
+          type="button"
+          class="filter-btn rounded-full border border-mist px-4 py-1.5 text-sm text-slate transition-colors hover:border-cobalt-600 hover:text-ink data-[active=true]:border-ink data-[active=true]:bg-ink data-[active=true]:text-paper"
+          data-category={cat}
+          data-active={cat === 'All' ? 'true' : 'false'}
+        >
+          {cat}
+        </button>
+      ))}
+    </div>
+
+    <div id="article-grid" class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {sorted.map((article) => (
+        <div data-category={article.data.category}>
+          <ArticleCard article={article} />
+        </div>
+      ))}
+    </div>
+
+    <p id="empty-state" class="mt-8 hidden text-sm text-slate">
+      No articles in this category yet — check back soon, or browse another category above.
+    </p>
+  </div>
+</BaseLayout>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const cards = document.querySelectorAll<HTMLElement>('#article-grid > div');
+  const emptyState = document.getElementById('empty-state');
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      buttons.forEach((b) => b.setAttribute('data-active', 'false'));
+      btn.setAttribute('data-active', 'true');
+
+      const category = btn.dataset.category;
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const show = category === 'All' || card.dataset.category === category;
+        card.classList.toggle('hidden', !show);
+        if (show) visibleCount++;
+      });
+
+      emptyState?.classList.toggle('hidden', visibleCount > 0);
+    });
+  });
+</script>

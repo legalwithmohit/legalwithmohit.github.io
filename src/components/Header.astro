@@ -1,0 +1,94 @@
+---
+import { SITE, NAV_LINKS } from '@/site.config';
+
+const { pathname } = Astro.url;
+const base = import.meta.env.BASE_URL;
+
+function isActive(href: string): boolean {
+  const normalizedHref = (base + href.replace(/^\//, '')).replace(/\/+$/, '/') || '/';
+  const normalizedPath = pathname.endsWith('/') ? pathname : pathname + '/';
+  return normalizedPath === normalizedHref || (href !== '/' && normalizedPath.startsWith(normalizedHref));
+}
+---
+
+<header class="sticky top-0 z-50 border-b border-mist bg-paper/90 backdrop-blur">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <a href={base} class="font-display text-lg font-semibold text-ink">
+      {SITE.name}
+    </a>
+
+    <nav aria-label="Primary" class="hidden md:block">
+      <ul class="flex items-center gap-8 font-body text-sm text-slate">
+        {NAV_LINKS.map((link) => (
+          <li>
+            <a
+              href={base + link.href.replace(/^\//, '')}
+              class:list={[
+                'transition-colors hover:text-ink',
+                { 'text-ink font-medium': isActive(link.href) },
+              ]}
+              aria-current={isActive(link.href) ? 'page' : undefined}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <a
+      href={base + 'contact/'}
+      class="hidden rounded-full bg-ink px-5 py-2 text-sm font-medium text-paper transition-colors hover:bg-cobalt-700 md:inline-block"
+    >
+      Book a Consultation
+    </a>
+
+    <button
+      id="menu-toggle"
+      type="button"
+      class="md:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Open menu"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+        <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" />
+      </svg>
+    </button>
+  </div>
+
+  <nav id="mobile-menu" aria-label="Mobile" class="hidden border-t border-mist bg-paper md:hidden">
+    <ul class="flex flex-col gap-1 px-6 py-4 font-body text-base">
+      {NAV_LINKS.map((link) => (
+        <li>
+          <a
+            href={base + link.href.replace(/^\//, '')}
+            class="block py-2 text-slate hover:text-ink"
+            aria-current={isActive(link.href) ? 'page' : undefined}
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+      <li class="pt-2">
+        <a
+          href={base + 'contact/'}
+          class="block rounded-full bg-ink px-5 py-2 text-center text-paper"
+        >
+          Book a Consultation
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+
+  toggle?.addEventListener('click', () => {
+    const isOpen = menu?.classList.toggle('hidden') === false;
+    toggle.setAttribute('aria-expanded', String(isOpen));
+    toggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+  });
+</script>

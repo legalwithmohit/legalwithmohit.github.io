@@ -1,0 +1,50 @@
+---
+interface Props {
+  faqs: { question: string; answer: string }[];
+  heading?: string;
+}
+const { faqs, heading = 'Frequently Asked Questions' } = Astro.props;
+---
+
+<section aria-labelledby="faq-heading">
+  <h2 id="faq-heading" class="font-display text-2xl font-medium text-ink">{heading}</h2>
+  <dl class="mt-6 divide-y divide-mist border-y border-mist">
+    {faqs.map((faq, i) => (
+      <div class="py-2">
+        <dt>
+          <button
+            type="button"
+            class="faq-trigger flex w-full items-center justify-between gap-4 py-4 text-left"
+            aria-expanded="false"
+            aria-controls={`faq-answer-${i}`}
+          >
+            <span class="font-body text-base font-medium text-ink">{faq.question}</span>
+            <svg
+              class="faq-icon h-4 w-4 flex-shrink-0 text-slate transition-transform"
+              viewBox="0 0 16 16"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </dt>
+        <dd id={`faq-answer-${i}`} class="faq-answer hidden pb-4 text-sm leading-relaxed text-slate">
+          {faq.answer}
+        </dd>
+      </div>
+    ))}
+  </dl>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.faq-trigger').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!expanded));
+      const answer = document.getElementById(btn.getAttribute('aria-controls')!);
+      answer?.classList.toggle('hidden');
+      btn.querySelector('.faq-icon')?.classList.toggle('rotate-180');
+    });
+  });
+</script>

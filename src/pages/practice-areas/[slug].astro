@@ -1,0 +1,105 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import FAQ from '@/components/FAQ.astro';
+import ArticleCard from '@/components/ArticleCard.astro';
+import ContactCTA from '@/components/ContactCTA.astro';
+import { PRACTICE_AREAS } from '@/site.config';
+import { getCollection } from 'astro:content';
+import { sortByDateDesc } from '@/lib/articles';
+
+export async function getStaticPaths() {
+  return PRACTICE_AREAS.map((area) => ({
+    params: { slug: area.key },
+    props: { area },
+  }));
+}
+
+const { area } = Astro.props;
+
+const allArticles = await getCollection('articles', ({ data }) => !data.draft);
+const relatedArticles = sortByDateDesc(
+  allArticles.filter((a) => a.data.category === area.title)
+).slice(0, 3);
+
+const structuredData = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  serviceType: area.title,
+  description: area.overview,
+  areaServed: 'IN',
+});
+---
+
+<BaseLayout
+  title={area.title}
+  description={area.shortDescription}
+  structuredData={structuredData}
+>
+  <div class="mx-auto max-w-3xl px-6 py-14">
+    <Breadcrumbs
+      crumbs={[
+        { label: 'Home', href: '/' },
+        { label: 'Practice Areas', href: '/practice-areas/' },
+        { label: area.title, href: `/practice-areas/${area.key}/` },
+      ]}
+    />
+
+    <header class="mt-6">
+      <p class="citation-mark">Practice Area</p>
+      <h1 class="mt-3 font-display text-3xl font-medium text-ink sm:text-4xl">{area.title}</h1>
+      <p class="mt-4 text-base leading-relaxed text-slate">{area.shortDescription}</p>
+    </header>
+
+    <section class="prose prose-slate mt-10 max-w-none">
+      <h2>Overview</h2>
+      <p>{area.overview}</p>
+    </section>
+
+    <section class="mt-10">
+      <h2 class="font-display text-xl font-medium text-ink">Common Situations</h2>
+      <ul class="mt-4 space-y-3">
+        {area.commonSituations.map((item) => (
+          <li class="flex gap-3 text-sm leading-relaxed text-slate">
+            <span class="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-cobalt-600" aria-hidden="true"></span>
+            {item}
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="mt-10">
+      <h2 class="font-display text-xl font-medium text-ink">How I Can Help</h2>
+      <ul class="mt-4 space-y-3">
+        {area.howICanHelp.map((item) => (
+          <li class="flex gap-3 text-sm leading-relaxed text-slate">
+            <span class="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-cobalt-600" aria-hidden="true"></span>
+            {item}
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="mt-12 border-t border-mist pt-10">
+      <FAQ faqs={area.faqs} />
+    </section>
+
+    {relatedArticles.length > 0 && (
+      <section class="mt-12 border-t border-mist pt-10" aria-labelledby="related-articles-heading">
+        <h2 id="related-articles-heading" class="font-display text-xl font-medium text-ink">
+          Related Articles
+        </h2>
+        <div class="mt-6 grid gap-6 sm:grid-cols-2">
+          {relatedArticles.map((article) => <ArticleCard article={article} />)}
+        </div>
+      </section>
+    )}
+
+    <div class="mt-16">
+      <ContactCTA
+        heading={`Facing a ${area.title.toLowerCase()} issue?`}
+        body="Every situation has details that general information cannot cover. Book a consultation to talk through yours."
+      />
+    </div>
+  </div>
+</BaseLayout>

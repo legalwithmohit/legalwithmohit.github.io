@@ -1,0 +1,172 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PracticeAreaCard from '@/components/PracticeAreaCard.astro';
+import ArticleCard from '@/components/ArticleCard.astro';
+import FAQ from '@/components/FAQ.astro';
+import ContactCTA from '@/components/ContactCTA.astro';
+import { SITE, PRACTICE_AREAS } from '@/site.config';
+import { getCollection } from 'astro:content';
+import { sortByDateDesc } from '@/lib/articles';
+
+const base = import.meta.env.BASE_URL;
+const allArticles = await getCollection('articles', ({ data }) => !data.draft);
+const latestArticles = sortByDateDesc(allArticles).slice(0, 3);
+
+const homeFaqs = [
+  {
+    question: 'Is the information on this site legal advice?',
+    answer:
+      'No. Everything published here is general legal information meant to help you understand a situation. It is not a substitute for advice on your specific facts, which requires a consultation.',
+  },
+  {
+    question: 'How do I book a consultation?',
+    answer:
+      'Use the contact page to reach out by email, phone, or WhatsApp. A short reply will confirm the next available time and what to bring or prepare beforehand.',
+  },
+  {
+    question: 'Do you only take cases in one city?',
+    answer:
+      'Most in-person matters are handled locally, but many consultations — especially for document review and advice — can be conducted remotely regardless of location.',
+  },
+];
+
+const structuredData = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Attorney',
+  name: SITE.name,
+  description: SITE.description,
+  email: SITE.email,
+  telephone: SITE.phone,
+  address: { '@type': 'PostalAddress', name: SITE.address },
+  url: Astro.site?.toString(),
+});
+---
+
+<BaseLayout title={SITE.name} description={SITE.description} structuredData={structuredData}>
+  <!-- Hero -->
+  <section class="mx-auto max-w-6xl px-6 pb-16 pt-14 sm:pt-20">
+    <div class="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
+      <div>
+        <p class="citation-mark">{SITE.role}</p>
+        <h1 class="mt-4 font-display text-4xl font-medium leading-[1.1] text-ink sm:text-5xl">
+          Understand the law before you need to fight about it.
+        </h1>
+        <p class="mt-6 max-w-lg text-base leading-relaxed text-slate">
+          {SITE.tagline} This site explains common legal situations in plain
+          language — so you know your options before deciding what to do
+          next.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a
+            href={`${base}contact/`}
+            class="rounded-full bg-ink px-6 py-3 text-sm font-medium text-paper transition-colors hover:bg-cobalt-700"
+          >
+            Book a Consultation
+          </a>
+          <a
+            href={`${base}legal-insights/`}
+            class="rounded-full border border-ink px-6 py-3 text-sm font-medium text-ink transition-colors hover:bg-mist"
+          >
+            Read Legal Insights
+          </a>
+        </div>
+      </div>
+
+      <div class="relative">
+        <div class="aspect-[4/5] w-full max-w-sm overflow-hidden rounded-2xl bg-mist mx-auto lg:mx-0">
+          <img
+            src={`${base}images/portrait-hero.jpg`}
+            alt={`Portrait of ${SITE.name}, ${SITE.role}`}
+            class="h-full w-full object-cover"
+            width="500"
+            height="625"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Practice Areas -->
+  <section class="mx-auto max-w-6xl px-6 py-16" aria-labelledby="practice-areas-heading">
+    <div class="flex items-end justify-between gap-6">
+      <div>
+        <p class="citation-mark">What I handle</p>
+        <h2 id="practice-areas-heading" class="mt-3 font-display text-2xl font-medium text-ink sm:text-3xl">
+          Practice Areas
+        </h2>
+      </div>
+      <a href={`${base}practice-areas/`} class="hidden text-sm font-medium text-cobalt-600 hover:underline sm:block">
+        View all
+      </a>
+    </div>
+    <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {PRACTICE_AREAS.slice(0, 6).map((area) => <PracticeAreaCard area={area} />)}
+    </div>
+  </section>
+
+  <!-- Why work with me -->
+  <section class="bg-white py-16" aria-labelledby="why-heading">
+    <div class="mx-auto max-w-6xl px-6">
+      <p class="citation-mark">Approach</p>
+      <h2 id="why-heading" class="mt-3 max-w-xl font-display text-2xl font-medium text-ink sm:text-3xl">
+        Why work with me
+      </h2>
+      <div class="mt-10 grid gap-10 sm:grid-cols-3">
+        <div>
+          <p class="citation-mark">1</p>
+          <h3 class="mt-2 font-display text-lg font-medium text-ink">Plain language, first</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate">
+            You should understand your own case. Every explanation starts
+            in plain English before it reaches for a legal term.
+          </p>
+        </div>
+        <div>
+          <p class="citation-mark">2</p>
+          <h3 class="mt-2 font-display text-lg font-medium text-ink">Honest about the odds</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate">
+            You will hear realistic timelines and outcomes, not
+            reassurances designed to close a sale.
+          </p>
+        </div>
+        <div>
+          <p class="citation-mark">3</p>
+          <h3 class="mt-2 font-display text-lg font-medium text-ink">Available when it matters</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate">
+            Clear communication throughout a matter — not just at the
+            start and the invoice.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest Articles -->
+  <section class="mx-auto max-w-6xl px-6 py-16" aria-labelledby="latest-heading">
+    <div class="flex items-end justify-between gap-6">
+      <div>
+        <p class="citation-mark">Legal Insights</p>
+        <h2 id="latest-heading" class="mt-3 font-display text-2xl font-medium text-ink sm:text-3xl">
+          Latest Articles
+        </h2>
+      </div>
+      <a href={`${base}legal-insights/`} class="hidden text-sm font-medium text-cobalt-600 hover:underline sm:block">
+        View all
+      </a>
+    </div>
+    <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {latestArticles.map((article) => <ArticleCard article={article} />)}
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="bg-white py-16">
+    <div class="mx-auto max-w-3xl px-6">
+      <FAQ faqs={homeFaqs} />
+    </div>
+  </section>
+
+  <!-- Contact CTA -->
+  <section class="mx-auto max-w-6xl px-6 py-16">
+    <ContactCTA />
+  </section>
+</BaseLayout>

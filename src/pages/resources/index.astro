@@ -1,0 +1,68 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import ContactCTA from '@/components/ContactCTA.astro';
+
+// Placeholder data structure for future downloadable guides and checklists.
+// Replace with real entries as they're published; consider moving this to
+// its own content collection (src/content/resources) once volume grows.
+const upcomingResources = [
+  {
+    title: 'Property Purchase Checklist',
+    format: 'PDF Checklist',
+    status: 'Coming soon',
+  },
+  {
+    title: 'What to Bring to a First Consultation',
+    format: 'PDF Guide',
+    status: 'Coming soon',
+  },
+  {
+    title: 'Understanding Your Rights After an FIR',
+    format: 'PDF Guide',
+    status: 'Coming soon',
+  },
+];
+---
+
+<BaseLayout
+  title="Resources"
+  description="Downloadable guides and checklists to help you prepare before a legal process begins. New resources are added regularly."
+>
+  <div class="mx-auto max-w-3xl px-6 py-14">
+    <Breadcrumbs crumbs={[{ label: 'Home', href: '/' }, { label: 'Resources', href: '/resources/' }]} />
+
+    <header class="mt-6">
+      <p class="citation-mark">Resources</p>
+      <h1 class="mt-3 font-display text-3xl font-medium text-ink sm:text-4xl">
+        Guides and checklists
+      </h1>
+      <p class="mt-4 text-base leading-relaxed text-slate">
+        This section is growing. Downloadable guides and checklists will
+        be added here to help you prepare before a legal process begins —
+        starting with the situations covered most often in Legal Insights.
+      </p>
+    </header>
+
+    <ul class="mt-10 divide-y divide-mist border-y border-mist">
+      {upcomingResources.map((resource) => (
+        <li class="flex items-center justify-between py-4">
+          <div>
+            <p class="font-medium text-ink">{resource.title}</p>
+            <p class="text-sm text-slate">{resource.format}</p>
+          </div>
+          <span class="rounded-full bg-mist px-3 py-1 text-xs font-medium text-slate">
+            {resource.status}
+          </span>
+        </li>
+      ))}
+    </ul>
+
+    <div class="mt-16">
+      <ContactCTA
+        heading="Looking for something specific?"
+        body="If there's a guide or checklist that would help you, let me know and it will be considered for a future update."
+      />
+    </div>
+  </div>
+</BaseLayout>

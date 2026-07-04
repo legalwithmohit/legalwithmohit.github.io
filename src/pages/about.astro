@@ -1,0 +1,99 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import ContactCTA from '@/components/ContactCTA.astro';
+import { SITE } from '@/site.config';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout
+  title="About"
+  description={`The professional journey, values, and approach behind ${SITE.name}'s legal practice.`}
+>
+  <div class="mx-auto max-w-3xl px-6 py-14">
+    <Breadcrumbs crumbs={[{ label: 'Home', href: '/' }, { label: 'About', href: '/about/' }]} />
+
+    <header class="mt-6">
+      <p class="citation-mark">About</p>
+      <h1 class="mt-3 font-display text-3xl font-medium text-ink sm:text-4xl">
+        Why I practice law this way
+      </h1>
+    </header>
+
+    <div class="prose prose-slate mt-10 max-w-none">
+      <div class="not-prose mb-10 aspect-[3/2] w-full overflow-hidden rounded-2xl bg-mist">
+        <img
+          src={`${base}images/portrait-about.jpg`}
+          alt={`Portrait of ${SITE.name}, ${SITE.role}`}
+          class="h-full w-full object-cover"
+          width="500"
+          height="333"
+        />
+      </div>
+
+      <h2>Professional journey</h2>
+      <p>
+        I completed my LLB with a focus on civil and commercial law, and
+        began my career working closely with senior counsel on property,
+        family, and consumer matters. That early experience shaped a
+        conviction that stayed with me since: most legal problems are made
+        worse by confusion, not by the law itself. People often make
+        avoidable mistakes simply because no one explained their options
+        clearly before a decision had to be made.
+      </p>
+
+      <h2>Education</h2>
+      <ul>
+        <li>LLB — [Law School Name], [Year]</li>
+        <li>Enrolled with the [State] Bar Council, [Year]</li>
+      </ul>
+
+      <h2>Why law</h2>
+      <p>
+        I was drawn to law because it sits at the point where ordinary
+        life meets formal process — a property inherited from a parent, a
+        job that ended abruptly, an agreement that was never quite fair.
+        Practicing law, done well, means helping people move through that
+        process with less confusion and less fear.
+      </p>
+
+      <h2>Mission</h2>
+      <p>
+        To make the law understandable before it becomes personal —
+        publishing clear explanations of common legal situations, and
+        offering direct, honest advice when someone needs it.
+      </p>
+
+      <h2>Values</h2>
+      <ul>
+        <li><strong>Clarity over jargon.</strong> If an explanation needs a law degree to follow, it needs to be rewritten.</li>
+        <li><strong>Honesty over reassurance.</strong> A realistic answer today is worth more than false comfort now and a bad surprise later.</li>
+        <li><strong>Access over exclusivity.</strong> Good legal information should not be locked behind a first meeting.</li>
+      </ul>
+
+      <h2>Approach</h2>
+      <p>
+        Every matter starts with understanding the full picture before
+        recommending a path — because the fastest route on paper is not
+        always the best one for the person living through it. Where a
+        dispute can be resolved without prolonged litigation, that option
+        is always explained first.
+      </p>
+
+      <h2>Languages</h2>
+      <p>Hindi, English, and conversational Punjabi.</p>
+
+      <h2>Interests</h2>
+      <p>
+        Outside of practice: long-distance running, constitutional
+        history, and volunteering with a legal-literacy program for
+        first-generation college students.
+      </p>
+    </div>
+
+    <div class="mt-16">
+      <ContactCTA />
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,51 @@
+---
+import { SITE, NAV_LINKS, PRACTICE_AREAS } from '@/site.config';
+const base = import.meta.env.BASE_URL;
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-mist bg-white">
+  <div class="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-4">
+    <div class="md:col-span-2">
+      <p class="font-display text-lg font-semibold text-ink">{SITE.name}</p>
+      <p class="mt-3 max-w-sm text-sm leading-relaxed text-slate">
+        {SITE.description}
+      </p>
+      <p class="mt-6 text-sm text-slate">
+        <a href={`mailto:${SITE.email}`} class="hover:text-ink">{SITE.email}</a><br />
+        <a href={`tel:${SITE.phone}`} class="hover:text-ink">{SITE.phone}</a>
+      </p>
+    </div>
+
+    <div>
+      <p class="citation-mark mb-3">Navigate</p>
+      <ul class="space-y-2 text-sm text-slate">
+        {NAV_LINKS.map((link) => (
+          <li><a href={base + link.href.replace(/^\//, '')} class="hover:text-ink">{link.label}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <p class="citation-mark mb-3">Practice Areas</p>
+      <ul class="space-y-2 text-sm text-slate">
+        {PRACTICE_AREAS.slice(0, 5).map((area) => (
+          <li>
+            <a href={`${base}practice-areas/${area.key}/`} class="hover:text-ink">{area.title}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-mist">
+    <div class="mx-auto flex max-w-6xl flex-col gap-2 px-6 py-6 text-xs text-slate md:flex-row md:items-center md:justify-between">
+      <p>&copy; {year} {SITE.name}. All rights reserved.</p>
+      <p class="flex gap-4">
+        <a href={`${base}legal-insights/rss.xml`} class="hover:text-ink">RSS</a>
+        <a href={`${base}sitemap-index.xml`} class="hover:text-ink">Sitemap</a>
+        <span>This site provides general legal information, not legal advice.</span>
+      </p>
+    </div>
+  </div>
+</footer>

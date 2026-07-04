@@ -1,0 +1,42 @@
+---
+import { SITE } from '@/site.config';
+
+interface Crumb {
+  label: string;
+  href: string;
+}
+interface Props {
+  crumbs: Crumb[];
+}
+const { crumbs } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+const itemListElement = crumbs.map((crumb, i) => ({
+  '@type': 'ListItem',
+  position: i + 1,
+  name: crumb.label,
+  item: new URL(base + crumb.href.replace(/^\//, ''), Astro.site).toString(),
+}));
+
+const structuredData = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement,
+});
+---
+
+<script type="application/ld+json" set:html={structuredData} />
+<nav aria-label="Breadcrumb" class="text-sm text-slate">
+  <ol class="flex flex-wrap items-center gap-1">
+    {crumbs.map((crumb, i) => (
+      <li class="flex items-center gap-1">
+        {i > 0 && <span aria-hidden="true" class="px-1">/</span>}
+        {i === crumbs.length - 1 ? (
+          <span aria-current="page" class="text-ink">{crumb.label}</span>
+        ) : (
+          <a href={base + crumb.href.replace(/^\//, '')} class="hover:text-ink">{crumb.label}</a>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>

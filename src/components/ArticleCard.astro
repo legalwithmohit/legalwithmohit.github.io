@@ -1,0 +1,28 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate, readingTime } from '@/lib/articles';
+
+interface Props {
+  article: CollectionEntry<'articles'>;
+}
+const { article } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const { title, description, category, publishDate } = article.data;
+const time = readingTime(article.body);
+---
+
+<a
+  href={`${base}legal-insights/${article.slug}/`}
+  class="group flex flex-col rounded-2xl border border-mist bg-white p-6 transition-all hover:border-cobalt-100 hover:shadow-[0_2px_24px_-4px_rgba(18,32,58,0.08)]"
+>
+  <span class="citation-mark">{category}</span>
+  <h3 class="mt-3 font-display text-lg font-medium leading-snug text-ink group-hover:text-cobalt-700">
+    {title}
+  </h3>
+  <p class="mt-2 flex-1 text-sm leading-relaxed text-slate">{description}</p>
+  <p class="mt-4 text-xs text-slate">
+    <time datetime={publishDate.toISOString()}>{formatDate(publishDate)}</time>
+    <span aria-hidden="true"> · </span>
+    {time}
+  </p>
+</a>
