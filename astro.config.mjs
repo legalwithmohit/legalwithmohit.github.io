@@ -2,9 +2,9 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 
-// GitHub Pages project site URL for this repository.
-const SITE_URL = 'https://legalwithmohit.github.io/lawyer-website';
-const BASE_PATH = '/lawyer-website/'; // keep the trailing slash for GitHub Pages project sites
+// GitHub Pages user site URL for this repository.
+const SITE_URL = 'https://legalwithmohit.github.io';
+const BASE_PATH = '/';
 
 export default defineConfig({
   site: SITE_URL,
